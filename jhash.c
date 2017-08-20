@@ -39,12 +39,7 @@
 extern "C" {
 #endif
 
-#include <stdio.h>      /* defines printf for tests */
-#include <time.h>       /* defines time_t for timings in the test */
-#include <stdint.h>     /* defines uint32_t etc */
-#include <sys/param.h>  /* attempt to define endianness */
-#include <endian.h>    /* attempt to define endianness */
-#include "tcost.h"
+#include "jhash.h"
 
 /*
  *  * My best guess at if you are big-endian or little-endian.  This may

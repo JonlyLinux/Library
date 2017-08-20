@@ -44,8 +44,9 @@ struct hlist_head {
 
 #define LIST_HEAD_INIT(name) { &(name), &(name) }
 
-#define LIST_HEAD(name) \
-	struct list_head name = LIST_HEAD_INIT(name)
+#define LIST_HEAD(name) struct list_head name
+
+#define LIST_ENTRY(name) struct list_head name
 
 static inline void INIT_LIST_HEAD(struct list_head *list)
 {
