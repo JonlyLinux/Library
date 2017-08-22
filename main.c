@@ -47,9 +47,6 @@ int fucker_travel(avlnode_t *n)
     return 0;
 }
 
-
-
-
 avltree_t fuckertree;
 
 int main(int argc, char *argv[])
