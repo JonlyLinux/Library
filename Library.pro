@@ -4,7 +4,8 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += main.c \
-    jhash.c
+    jhash.c \
+    avltree.c
 
 DISTFILES += \
     Library.pro.user \
@@ -13,4 +14,6 @@ DISTFILES += \
 HEADERS += \
     list.h \
     queue.h \
-    jhash.h
+    jhash.h \
+    stdmacro.h \
+    avltree.h
