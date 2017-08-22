@@ -16,4 +16,6 @@ HEADERS += \
     queue.h \
     jhash.h \
     stdmacro.h \
-    avltree.h
+    avltree.h \
+    sync.h \
+    builtin.h

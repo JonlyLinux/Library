@@ -32,6 +32,11 @@ avltree_t *avltree_destroy(avltree_t *tree)
     tree->spinlock = 0;
 }
 
+/**************************
+ *   A            B
+ *  B    --->   A   C
+ * C
+ ****************************/
 static inline avlnode_t *_avltree_single_rotate_left(avlnode_t *top, avlnode_t *cent)
 {
     top->left = cent->right;
@@ -41,6 +46,12 @@ static inline avlnode_t *_avltree_single_rotate_left(avlnode_t *top, avlnode_t *
 
     return cent;
 }
+
+/****************************
+ *   A                 B
+ *    B    -->       A   C
+ *     C
+ *****************************/
 static inline avlnode_t *_avltree_single_rotate_right(avlnode_t *top, avlnode_t *cent)
 {
     top->right = cent->left;
@@ -51,6 +62,14 @@ static inline avlnode_t *_avltree_single_rotate_right(avlnode_t *top, avlnode_t 
 
     return cent;
 }
+
+/*******************************************************
+ *     A              A               C
+ *   B      -->     C         --->  B   A
+ *     C          B
+ *
+ *
+ *******************************************************/
 static avlnode_t *_avltree_double_rotate_left(avlnode_t *top, avlnode_t *cent, avlnode_t *bot)
 {
     _avltree_single_rotate_right(cent, bot);
@@ -58,6 +77,15 @@ static avlnode_t *_avltree_double_rotate_left(avlnode_t *top, avlnode_t *cent, a
 
     return bot;
 }
+
+
+/*******************************************************
+ *     A               A                   C
+ *        B      -->     C         --->  A   B
+ *     C                   B
+ *
+ *
+ *******************************************************/
 static avlnode_t *_avltree_double_rotate_right(avlnode_t *top, avlnode_t *cent, avlnode_t *bot)
 {
     _avltree_single_rotate_left(cent, bot);
@@ -65,6 +93,7 @@ static avlnode_t *_avltree_double_rotate_right(avlnode_t *top, avlnode_t *cent, 
 
     return bot;
 }
+
 static avlnode_t *_avltree_insert(avlnode_t *root, avlnode_t *node, avlnode_cmp_func_t cmp_func, avlnode_t **retnode)
 {
     int val;
@@ -117,11 +146,14 @@ static avlnode_t *_avltree_insert(avlnode_t *root, avlnode_t *node, avlnode_cmp_
         node->left = root->left;
         node->right = root->right;
         node->parent = root->parent;
-        if (root->parent && root->parent->left == root)
-            root->parent->left = node;
-        else if (root->parent && root->parent->right == root)
-            root->parent->right = node;
-        
+        if (root->parent) {
+            if (root->parent->left == root) {
+                root->parent->left = node;
+            } else {
+                root->parent->right = node;
+            }
+        }
+
         *retnode = root;
         root = node;
     }

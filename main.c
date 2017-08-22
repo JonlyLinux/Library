@@ -8,6 +8,7 @@
 #include "list.h"
 #include "queue.h"
 #include "avltree.h"
+#include "sync.h"
 
 typedef struct fucker_s {
     int id;
@@ -131,6 +132,7 @@ int main(int argc, char *argv[])
 
 
     avltree_destroy(&fuckertree);
+
     return 0;
 }
 
