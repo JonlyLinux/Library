@@ -52,7 +52,7 @@ avltree_t fuckertree;
 
 int main(int argc, char *argv[])
 {
-    uint32_t max = 1 << 24;
+    uint32_t max = 1 << 21;
     int i;
     fucker_t *f;
 
@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
 
     avltree_init(&fuckertree, fucker_cmp, fucker_del, fucker_travel);
     avltree_bfs(&fuckertree);
-#if 1
+#if 0
     for (i = 0; i < sizeof(arr)/sizeof(int); i++) {
         f = malloc(sizeof(fucker_t));
         f->id = arr[i];
@@ -94,6 +94,8 @@ int main(int argc, char *argv[])
 
 #else
 
+
+#if 0
     printf("-----------------------------------------\n");
     gettimeofday(&stv, NULL);
     for (i = 0; i < max; i++) {
@@ -109,7 +111,7 @@ int main(int argc, char *argv[])
     pass_s = pass_ms / 1000;
     printf("Total: %.1lf, Time: %.1lf, Speed: %.1lf\n", count, pass_s, count/pass_s);
 
-
+#endif
 
     printf("-----------------------------------------\n");
     count = 0;
@@ -129,39 +131,7 @@ int main(int argc, char *argv[])
     pass_s = pass_ms / 1000;
     printf("Total: %.1lf, Time: %.1lf, Speed: %.1lf\n", count, pass_s, count/pass_s);
 
-#if 0
     printf("-----------------------------------------\n");
-    avlnode_t *p;
-    f = malloc(sizeof(fucker_t));
-    f->id = 0x12345;
-    if ((p = avltree_find(&fuckertree, &f->node)) != NULL) {
-        printf("p: %p, %d\n", p, p->height);
-        fucker_travel(p);
-    }
-    free(f);
-
-
-    printf("-----------------------------------------\n");
-    f = malloc(sizeof(fucker_t));
-    f->id = 0x12345;
-    if ((p = avltree_insert(&fuckertree, &f->node)) != NULL) {
-        printf("p: %p, %d\n", p, p->height);
-        fucker_travel(p);
-    }
-    free(f);
-
-    printf("-----------------------------------------\n");
-    f = malloc(sizeof(fucker_t));
-    f->id = 0x12345;
-    if ((p = avltree_find(&fuckertree, &f->node)) != NULL) {
-        printf("p: %p, %d\n", p, p->height);
-        fucker_travel(p);
-    }
-    free(f);
-
-    printf("-----------------------------------------\n");
-#endif
-
     count = 0;
     gettimeofday(&stv, NULL);
     f = malloc(sizeof(fucker_t));
@@ -170,7 +140,7 @@ int main(int argc, char *argv[])
         if (avltree_delete(&fuckertree, &f->node) != NULL) {
             count++;
         } else {
-            printf("delete: %x error\n", i);
+            //printf("delete: %x error\n", i);
         }
     }
     free(f);
@@ -181,6 +151,7 @@ int main(int argc, char *argv[])
     pass_s = pass_ms / 1000;
     printf("Total: %.1lf, Time: %.1lf, Speed: %.1lf\n", count, pass_s, count/pass_s);
 #endif
+
 
     printf("---------------after delete--------------------------\n");
     avltree_bfs(&fuckertree);

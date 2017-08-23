@@ -190,7 +190,7 @@ static avlnode_t *_avltree_delete(avlnode_t *root,
     avlnode_t tmp_next;
 
     if (root == NULL) {
-        return node;
+        return NULL;
     }
 
     val = cmp_func(node, root);
