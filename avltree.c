@@ -16,7 +16,6 @@ static void _avltree_destroy(avlnode_t *root, avlnode_del_func_t del_func)
     if (root) {
         _avltree_destroy(root->left, del_func);
         _avltree_destroy(root->right, del_func);
-        root->parent = NULL;
         root->left   = NULL;
         root->right  = NULL;    
         root->height = 0;
@@ -94,16 +93,27 @@ static avlnode_t *_avltree_double_rotate_right(avlnode_t *top, avlnode_t *cent, 
     return bot;
 }
 
+/*
+    insert node into tree, and return the new root.
+    in:
+        @root, the tree's root
+        @node, the node which will be inserted
+        @cmp_func, the compare function point
+    out:
+        @retnode, when cmp_func return 0 with the new node and the node exists
+         in the tree. use the new node instead the old node.
+         the old node returns by retnode.
+        @return val, return the new root.
+*/
 static avlnode_t *_avltree_insert(avlnode_t *root, avlnode_t *node, avlnode_cmp_func_t cmp_func, avlnode_t **retnode)
 {
     int val;
-    int hp, hl, hr;
+    int hl, hr;
 
     if (root == NULL) {
         return node;
     }
 
-    node->parent = root;
     val = cmp_func(node, root);
     if (val < 0) {
         root->left = _avltree_insert(root->left, node, cmp_func, retnode);
@@ -130,7 +140,7 @@ static avlnode_t *_avltree_insert(avlnode_t *root, avlnode_t *node, avlnode_cmp_
         hl = HEIGHT(root->left);
         hr = HEIGHT(root->right);
         
-        if (hr -hl == 2) {
+        if (hr - hl == 2) {
             val = cmp_func(node, root->right);
             if (val > 0) {
                 root = _avltree_single_rotate_right(root, root->right);
@@ -142,20 +152,7 @@ static avlnode_t *_avltree_insert(avlnode_t *root, avlnode_t *node, avlnode_cmp_
             root->height = MAX(hl, hr) + 1;
         }
     } else {
-        node->height = root->height;
-        node->left = root->left;
-        node->right = root->right;
-        node->parent = root->parent;
-        if (root->parent) {
-            if (root->parent->left == root) {
-                root->parent->left = node;
-            } else {
-                root->parent->right = node;
-            }
-        }
-
         *retnode = root;
-        root = node;
     }
 
     return root;
@@ -174,15 +171,138 @@ avlnode_t *avltree_insert(avltree_t *tree, avlnode_t *node)
 
     node->left = NULL;
     node->right = NULL;
-    node->parent = NULL;
     node->height = 0;
     tree->root = _avltree_insert(tree->root, node, tree->cmp_func, &retnode);
 
     return retnode;
 }
 
+static avlnode_t *_avltree_delete(avlnode_t *root,
+                                  avlnode_t *node,
+                                  avlnode_cmp_func_t cmp_func,
+                                  avlnode_t **retnode)
+{
+    int val;
+    int hl, hr;
+    int hrr, hrl;
+    int hll, hlr;
+    avlnode_t *parent, *next;
+    avlnode_t tmp_next;
+
+    if (root == NULL) {
+        return node;
+    }
+
+    val = cmp_func(node, root);
+
+    if (val < 0) {
+        root->left = _avltree_delete(root->left, node, cmp_func, retnode);
+        /* make balance */
+        hl = HEIGHT(root->left);
+        hr = HEIGHT(root->right);
+
+        if (hr - hl == 2) {
+            hrr = HEIGHT(root->right->right);
+            hrl = HEIGHT(root->right->left);
+            if (hrr >= hrl) {
+                root = _avltree_single_rotate_right(root, root->right);
+            } else {
+                root = _avltree_double_rotate_right(root, root->right, root->right->left);
+            }
+        } else {
+            /* caculate root's height */
+            root->height = MAX(hl, hr) + 1;
+        }
+    } else if (val > 0) {
+        root->right = _avltree_delete(root->right, node, cmp_func, retnode);
+
+        /* make balance */
+        hl = HEIGHT(root->left);
+        hr = HEIGHT(root->right);
+
+        if (hl - hr == 2) {
+            hll = HEIGHT(root->left->left);
+            hlr = HEIGHT(root->left->right);
+            if (hll >= hlr) {
+                root = _avltree_single_rotate_left(root, root->left);
+            } else {
+                root = _avltree_double_rotate_left(root, root->left, root->left->right);
+            }
+        } else {
+            /* caculate root's height */
+            root->height = MAX(hl, hr) + 1;
+        }
+    } else {
+        if (root->left == NULL) {
+            *retnode = root;
+            next = root->right;
+            root->right = NULL;
+            root = next;
+
+            return root;
+        }
+
+        if (root->right == NULL) {
+            *retnode = root;
+            next = root->left;
+            root->left = NULL;
+            root = next;
+
+            return root;
+        }
+
+        /* find next node which is the min of root->right */
+        parent = NULL;
+        next = root->right;
+        while (next && next->left) {
+            parent = next;
+            next = next->left;
+        }
+
+        /* exchange root and next node */
+        avlnode_copy(&tmp_next, next);
+        avlnode_copy(next, root);
+        avlnode_copy(root, &tmp_next);
+
+        /* fix the tree after exchange */
+        if (parent == NULL) {
+            next->right = root;
+        } else {
+            parent->left = root;
+        }
+
+        /* node become the root, and root become the node will be deleted */
+        node = root;
+        root = next;
+
+        root->right = _avltree_delete(root->right, node, cmp_func, retnode);
+        /* make balance, copy from above, and should be modify */
+        hl = HEIGHT(root->left);
+        hr = HEIGHT(root->right);
+
+        if (hl - hr == 2) {
+            hll = HEIGHT(root->left->left);
+            hlr = HEIGHT(root->left->right);
+            if (hll >= hlr) {
+                root = _avltree_single_rotate_left(root, root->left);
+            } else {
+                root = _avltree_double_rotate_left(root, root->left, root->left->right);
+            }
+        } else {
+            /* caculate root's height */
+            root->height = MAX(hl, hr) + 1;
+        }
+    }
+
+    return root;
+}
+
 avlnode_t *avltree_delete(avltree_t *tree, avlnode_t *node)
 {
+    avlnode_t *retnode = NULL;
+    tree->root = _avltree_delete(tree->root, node, tree->cmp_func, &retnode);
+
+    return retnode;
 }
 
 
@@ -222,8 +342,11 @@ void avltree_bfs(avltree_t *tree)
     avlinitqueue(queue);
     
     int layer = 0;
-    tree->root->layer = 0;
-    avlenqueue(queue, tree->root);
+
+    if (tree->root) {
+        tree->root->layer = 0;
+        avlenqueue(queue, tree->root);
+    }
 
     while ((node = avldequeue(queue)) != NULL) {
         if (node->layer != layer) {

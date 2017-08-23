@@ -5,11 +5,22 @@
 #include "stdmacro.h"
 
 typedef struct avlnode_s {
-    struct avlnode_s *left, *right, *parent;
-    struct avlnode_s *prev, *next;
+    struct avlnode_s *left, *right;
     uint32_t height;
+
+    struct avlnode_s *prev, *next;
     uint32_t layer;
 } avlnode_t;
+
+static inline void avlnode_copy(avlnode_t *dst, avlnode_t *src)
+{
+    dst->left = src->left;
+    dst->right = src->right;
+    dst->prev = src->prev;
+    dst->next = src->next;
+    dst->height = src->height;
+    dst->layer = src->layer;
+}
 
 #define HEIGHT(node) ((node) ? ((node)->height) : (-1))
 #define CALHEIGHT(node) ((node) ? (MAX(HEIGHT((node)->left), HEIGHT((node)->right)) + 1) : (-1))
