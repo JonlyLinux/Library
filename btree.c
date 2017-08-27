@@ -139,7 +139,6 @@ int btree_insert(btree_t *t, long k)
 
 long btree_find_min(bnode_t *x)
 {
-    printf("---------%s %d----------\n", __func__, __LINE__);
     if (x == NULL) {
         return -1;
     }
@@ -153,7 +152,6 @@ long btree_find_min(bnode_t *x)
 
 long btree_find_max(bnode_t *x)
 {
-    printf("---------%s %d----------\n", __func__, __LINE__);
     if (x == NULL) {
         return -1;
     }
@@ -170,7 +168,6 @@ long btree_find_max(bnode_t *x)
  */
 int btree_merge_child(bnode_t *x, long idx)
 {
-    printf("---------%s %d----------\n", __func__, __LINE__);
     bnode_t *y = x->child[idx];
     bnode_t *z = x->child[idx + 1];
     int i;
@@ -192,6 +189,10 @@ int btree_merge_child(bnode_t *x, long idx)
     for (i = idx+1; i < x->n; i++) {
         x->key[i-1] = x->key[i];
     }
+
+    for (i = idx + 2; i < x->n + 1; i++) {
+        x->child[i-1] = x->child[i];
+    }
     x->n--;
 
     /* free z */
@@ -203,18 +204,17 @@ int btree_merge_child(bnode_t *x, long idx)
 
 int btree_stole_left(bnode_t *x, long idx)
 {
-    printf("---------%s %d----------\n", __func__, __LINE__);
     int i;
     bnode_t *c = x->child[idx];
     bnode_t *l = x->child[idx - 1];
 
     /*make space in c*/
-    for (i = c->n-1; i > 0; i--) {
+    for (i = c->n-1; i >= 0; i--) {
         c->key[i+1] = c->key[i];
     }
 
     if (!c->leaf) {
-        for (i = c->n; i > 0; i--) {
+        for (i = c->n; i >= 0; i--) {
             c->child[i+1] = c->child[i];
         }
     }
@@ -232,7 +232,6 @@ int btree_stole_left(bnode_t *x, long idx)
 
 int btree_stole_right(bnode_t *x, long idx)
 {
-    printf("---------%s %d----------\n", __func__, __LINE__);
     int i;
     bnode_t *c = x->child[idx];
     bnode_t *r = x->child[idx + 1];

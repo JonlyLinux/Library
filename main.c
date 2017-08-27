@@ -201,72 +201,68 @@ void test_btree_splite_child()
 
 }
 
+
 void test_btree_insert()
 {
     btree_t tree;
+    int ok;
+    int notok;
     int i;
     btree_init(&tree, NULL, NULL);
 
-    int max = 200000;
+    int max = 50000000;
+    int *data;
+
+    data = calloc(max, sizeof(int));
 
     for (i = 0; i < max; i++) {
-        btree_insert(&tree, 2*i+1);
+        data[i] = hashlittle(&i, sizeof(i), 0);
+    }
+
+    for (i = 0; i < max; i++) {
+        btree_insert(&tree, data[i]);
+        ok++;
     }
     printf("-------------------------------------------\n");
 
     bnode_t *retn;
     long idx;
 
+    ok = 0;
+    notok = 0;
     for (i = 0; i < max; i++) {
-        btree_search(&tree, 2*i+1, &retn, &idx);
+        btree_search(&tree, data[i], &retn, &idx);
         if (retn == NULL) {
-            printf("find error: %d\n", 2*i+1);
+            //printf("find error: %d\n", 2*i+1);
+            notok++;
         } else {
             //printf("find %d : %d\n", i+1, retn->key[idx]);
+            ok++;
         }
     }
-
+    printf("Search after Insert: ok: %d, not ok: %d\n", ok, notok);
     printf("-------------------------------------------\n");
 
-    //btree_insert(&tree, 10);
-    //btree_bfs(&tree);
-
-    printf("-------------------------------------------\n");
-
-    long k;
-
-    k = btree_find_min(tree.root);
-    printf("min: %d\n", k);
-
-    k = btree_find_max(tree.root);
-    printf("max: %d\n", k);
-
-    printf("-------------------------------------------\n");
-#if 0 //btree_merge_child
-    printf("---------%s %d----------\n", __func__, __LINE__);
-    bnode_t *x, *y, *z;
-    x = tree.root;
-    y = x->child[0];
-    z = x->child[1];
-    z->n--;
-    printf("---------%s %d----------\n", __func__, __LINE__);
-    btree_merge_child(x, 0);
-    default_bnode_travle(x);
-    default_bnode_travle(y);
-#endif
 
     for (i = 0; i < max; i++) {
-        btree_delete(&tree, 2*i+1);
+        btree_delete(&tree, data[i]);
     }
-    k = btree_find_min(tree.root);
-    printf("min: %d\n", k);
 
-    k = btree_find_max(tree.root);
-    printf("max: %d\n", k);
-
-    //btree_delete(&tree, 1);
-    //btree_delete(&tree, 11);
-    //btree_bfs(&tree);
+    printf("-------------------------------------------\n");
+    ok = 0;
+    notok = 0;
+    for (i = 0; i < max; i++) {
+        btree_search(&tree, data[i], &retn, &idx);
+        if (retn == NULL) {
+            //printf("find error: %d\n", 2*i+1);
+            notok++;
+        } else {
+            //printf("find %d : %d\n", i+1, retn->key[idx]);
+            ok++;
+        }
+    }
+    printf("Search after Delete: ok: %d, not ok: %d\n", ok, notok);
+    printf("-------------------------------------------\n");
 }
 
 int main()
