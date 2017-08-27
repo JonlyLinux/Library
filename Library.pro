@@ -5,7 +5,9 @@ CONFIG -= qt
 
 SOURCES += main.c \
     jhash.c \
-    avltree.c
+    avltree.c \
+    ring.c \
+    btree.c
 
 DISTFILES += \
     Library.pro.user \
@@ -18,4 +20,6 @@ HEADERS += \
     stdmacro.h \
     avltree.h \
     sync.h \
-    builtin.h
+    builtin.h \
+    ring.h \
+    btree.h
