@@ -268,7 +268,7 @@ void test_btree_insert()
 int main()
 {
     //test_btree_splite_child();
-    test_btree_insert();
+    //test_btree_insert();
     return 0;
 }
 
