@@ -7,7 +7,9 @@ SOURCES += main.c \
     jhash.c \
     avltree.c \
     ring.c \
-    btree.c
+    btree.c \
+    rbt.c \
+    test_rbt.c
 
 DISTFILES += \
     Library.pro.user \
@@ -22,4 +24,5 @@ HEADERS += \
     sync.h \
     builtin.h \
     ring.h \
-    btree.h
+    btree.h \
+    rbt.h

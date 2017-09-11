@@ -9,6 +9,7 @@
 #include "queue.h"
 #include "avltree.h"
 #include "sync.h"
+#include "rbt.h"
 
 typedef struct fucker_s {
     int id;
@@ -265,10 +266,12 @@ void test_btree_insert()
     printf("-------------------------------------------\n");
 }
 
+extern void test_rbt();
 int main()
 {
     //test_btree_splite_child();
     //test_btree_insert();
+    test_rbt();
     return 0;
 }
 
