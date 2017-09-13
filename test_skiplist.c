@@ -1,5 +1,6 @@
 #include "skiplist.h"
 #include <stdio.h>
+#include <sys/time.h>
 
 skiplist_t sl;
 

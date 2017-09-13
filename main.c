@@ -270,6 +270,7 @@ extern void test_rbt();
 int test_skiplist(int argc, char *argv[]);
 #include "skiplist.h"
 
+#if 0
 int main(int argc, char *argv[])
 {
     //test_btree_splite_child();
@@ -279,6 +280,7 @@ int main(int argc, char *argv[])
 
     return 0;
 }
+#endif
 
 
 

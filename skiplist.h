@@ -4,7 +4,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include <alloca.h>
 
 #define SKIPLIST_P 25
 #define SKIPNODE_SIZE(level) (sizeof(skipnode_t)+(level)*sizeof(skipnode_t *))
