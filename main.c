@@ -267,11 +267,16 @@ void test_btree_insert()
 }
 
 extern void test_rbt();
-int main()
+int test_skiplist(int argc, char *argv[]);
+#include "skiplist.h"
+
+int main(int argc, char *argv[])
 {
     //test_btree_splite_child();
     //test_btree_insert();
-    test_rbt();
+    //test_rbt();
+    test_skiplist(argc, argv);
+
     return 0;
 }
 

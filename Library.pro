@@ -3,13 +3,17 @@ CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 
+QMAKE_CXXFLAGS  += -D__ARCH_QT__
+
 SOURCES += main.c \
     jhash.c \
     avltree.c \
     ring.c \
     btree.c \
     rbt.c \
-    test_rbt.c
+    test_rbt.c \
+    test_skiplist.c \
+    skiplist.c
 
 DISTFILES += \
     Library.pro.user \
@@ -25,4 +29,5 @@ HEADERS += \
     builtin.h \
     ring.h \
     btree.h \
-    rbt.h
+    rbt.h \
+    skiplist.h
